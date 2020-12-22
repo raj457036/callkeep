@@ -233,11 +233,15 @@ static CXProvider* sharedProvider;
     */
     NSDictionary *dic = payload.dictionaryPayload[@"callkeep"];
     NSString *number = dic[@"number"];
+    NSString *handleType = dic[@"handleType"];
+    NSString *uuid = dic[@"uuid"];
+    NSString *callerName = dic[@"callerName"];
+    BOOL hasVideo = [dic[@"hasVideo"] intValue] == 1;
     [CallKeep reportNewIncomingCall:[self createUUID]
                              handle:number
-                         handleType:@"number"
-                           hasVideo:NO
-                localizedCallerName:@"hello"
+                         handleType:handleType
+                           hasVideo:hasVideo
+                localizedCallerName:callerName
                         fromPushKit:YES
                             payload:payload.dictionaryPayload
               withCompletionHandler:^(){}];
