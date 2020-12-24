@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart'
     show
         showDialog,
@@ -9,7 +9,9 @@ import 'package:flutter/material.dart'
         FlatButton,
         Navigator,
         Text,
-        Widget;
+        Widget,
+        required;
+import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 
 import 'actions.dart';
@@ -257,6 +259,35 @@ class FlutterCallkeep extends EventManager {
     }
 
     await _channel.invokeMethod<void>('backToForeground', <String, dynamic>{});
+  }
+
+  Future<void> displayCustomIncomingCall(
+    String packageName,
+    String className, {
+    @required String icon,
+    Map<String, String> extra,
+    String contentTitle,
+    String answerText,
+    String declineText,
+    String ringtoneUri,
+  }) async {
+    assert(packageName != null);
+    assert(className != null);
+    assert(icon != null);
+    await _channel.invokeMethod('displayCustomIncomingCall', {
+      'packageName': packageName,
+      'className': className,
+      'icon': icon,
+      'extra': extra ?? <String, String>{},
+      'contentTitle': contentTitle ?? 'Incoming call',
+      'answerText': answerText ?? 'Answer',
+      'declineText': declineText ?? 'Decline',
+      'ringtoneUri': ringtoneUri,
+    });
+  }
+
+  Future<void> dismissCustomIncomingCall() async {
+    await _channel.invokeMethod('dismissCustomIncomingCall');
   }
 
   Future<void> _setupIOS(Map<String, dynamic> options) async {
