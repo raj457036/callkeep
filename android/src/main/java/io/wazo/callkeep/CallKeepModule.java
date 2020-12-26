@@ -42,6 +42,7 @@ import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -222,12 +223,12 @@ public class CallKeepModule {
                         (String)call.argument("packageName"),
                         (String)call.argument("className"),
                         (String)call.argument("icon"),
-                         (HashMap<String, String>) call.argument("extra"),
+                        (HashMap<String, String>) call.argument("extra"),
                         (String) call.argument("contentTitle"),
                         (String)call.argument("answerText"),
                         (String)call.argument("declineText"),
                         (String)call.argument("ringtoneUri")
-                        );
+                );
                 result.success(null);
             }
             break;
@@ -275,7 +276,38 @@ public class CallKeepModule {
 
 
     public void displayIncomingCall(String uuid, String number, String callerName) {
+        final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
+
+            RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
+            Context context = getAppContext();
+            String packageName = context.getApplicationContext().getPackageName();
+            final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
+
+//            final Intent answerIntent = new Intent();
+//            answerIntent.putExtra("io.wazo.callkeep.ACTION", "answer");
+//            answerIntent.setClassName(packageName, "$packageName.$className");
+//
+//            final Intent declineIntent = new Intent();
+//            declineIntent.putExtra("io.wazo.callkeep.ACTION", "decline");
+//            declineIntent.setClassName(packageName, );
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                final NotificationChannel channel = new NotificationChannel("incoming_calls", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
+
+            builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
+            builder.setFullScreenIntent(pendingIntent, true);
+            builder.setOngoing(true);
+            builder.setCategory(NotificationCompat.CATEGORY_CALL);
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
+            builder.setAutoCancel(true);
             return;
         }
 
@@ -293,7 +325,41 @@ public class CallKeepModule {
 
 
     public void answerIncomingCall(String uuid) {
+        final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
+
+            RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
+            Context context = getAppContext();
+            String packageName = context.getApplicationContext().getPackageName();
+            final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
+
+//            final Intent answerIntent = new Intent();
+//            answerIntent.putExtra("io.wazo.callkeep.ACTION", "answer");
+//            answerIntent.setClassName(packageName, "$packageName.$className");
+//
+//            final Intent declineIntent = new Intent();
+//            declineIntent.putExtra("io.wazo.callkeep.ACTION", "decline");
+//            declineIntent.setClassName(packageName, );
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                final NotificationChannel channel = new NotificationChannel("incoming_calls", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
+
+            builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
+            builder.setFullScreenIntent(pendingIntent, true);
+            builder.setOngoing(true);
+            builder.setCategory(NotificationCompat.CATEGORY_CALL);
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
+            builder.setAutoCancel(true);
+            builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+            builder.setCustomContentView(customCallNotification);
+            builder.setCustomBigContentView(customCallNotification);
             return;
         }
 
@@ -473,7 +539,7 @@ public class CallKeepModule {
                             result.success(false);
                         }
                     });
-             return;
+            return;
         }
 
         result.success(!hasPhoneAccount());
@@ -497,7 +563,7 @@ public class CallKeepModule {
         result.success(!hasSim || hasDefaultAccount);
     }
 
-    
+
     public void setOnHold(String uuid, boolean shouldHold) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -511,7 +577,7 @@ public class CallKeepModule {
         }
     }
 
-    
+
     public void reportEndCallWithUUID(String uuid, int reason) {
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
             return;
@@ -524,7 +590,7 @@ public class CallKeepModule {
         conn.reportDisconnect(reason);
     }
 
-    
+
     public void rejectCall(String uuid) {
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
             return;
@@ -538,7 +604,7 @@ public class CallKeepModule {
         conn.onReject();
     }
 
-    
+
     public void setMutedCall(String uuid, boolean shouldMute) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -557,7 +623,7 @@ public class CallKeepModule {
         conn.onCallAudioStateChanged(newAudioState);
     }
 
-    
+
     public void sendDTMF(String uuid, String key) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -567,7 +633,7 @@ public class CallKeepModule {
         conn.onPlayDtmfTone(dtmf);
     }
 
-    
+
     public void updateDisplay(String uuid, String displayName, String uri) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -578,7 +644,7 @@ public class CallKeepModule {
         conn.setCallerDisplayName(displayName, TelecomManager.PRESENTATION_ALLOWED);
     }
 
-    
+
     public void hasPhoneAccount(@NonNull MethodChannel.Result result) {
         if (telecomManager == null) {
             this.initializeTelecomManager();
@@ -587,27 +653,27 @@ public class CallKeepModule {
         result.success(hasPhoneAccount());
     }
 
-    
+
     public void hasOutgoingCall(@NonNull MethodChannel.Result result) {
         result.success(VoiceConnectionService.hasOutgoingCall);
     }
 
-    
+
     public void hasPermissions(@NonNull MethodChannel.Result result) {
         result.success(this.hasPermissions());
     }
 
-    
+
     public void setAvailable(Boolean active) {
         VoiceConnectionService.setAvailable(active);
     }
 
-    
+
     public void setReachable() {
         VoiceConnectionService.setReachable();
     }
 
-    
+
     public void setCurrentCallActive(String uuid) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -618,7 +684,7 @@ public class CallKeepModule {
         conn.setActive();
     }
 
-    
+
     public void openPhoneAccounts(@NonNull MethodChannel.Result result) {
         if (!isConnectionServiceAvailable()) {
             result.error("ConnectionServiceNotAvailable", null, null);
@@ -629,7 +695,7 @@ public class CallKeepModule {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             intent.setComponent(new ComponentName("com.android.server.telecom",
-                     "com.android.server.telecom.settings.EnableAccountPreferenceActivity"));
+                    "com.android.server.telecom.settings.EnableAccountPreferenceActivity"));
             this._currentActivity.startActivity(intent);
             result.success(null);
             return;
@@ -640,13 +706,13 @@ public class CallKeepModule {
         this._currentActivity.startActivity(intent);
         result.success(null);
     }
-    
+
     public static Boolean isConnectionServiceAvailable() {
         // PhoneAccount is available since api level 23
         return Build.VERSION.SDK_INT >= 23;
     }
 
-    
+
     @SuppressLint("WrongConstant")
     public void backToForeground(@NonNull MethodChannel.Result result) {
         Context context = getAppContext();
@@ -727,7 +793,7 @@ public class CallKeepModule {
 
     private static boolean hasPhoneAccount() {
         return isConnectionServiceAvailable() && telecomManager != null
-            && telecomManager.getPhoneAccount(handle) != null && telecomManager.getPhoneAccount(handle).isEnabled();
+                && telecomManager.getPhoneAccount(handle) != null && telecomManager.getPhoneAccount(handle).isEnabled();
     }
 
     private void registerReceiver() {
@@ -759,32 +825,32 @@ public class CallKeepModule {
             final Callback successCallback,
             final Callback errorCallback) {
         PermissionUtils.Callback callback = (permissions_, grantResults) -> {
-                    List<String> grantedPermissions = new ArrayList<>();
-                    List<String> deniedPermissions = new ArrayList<>();
+            List<String> grantedPermissions = new ArrayList<>();
+            List<String> deniedPermissions = new ArrayList<>();
 
-                    for (int i = 0; i < permissions_.length; ++i) {
-                        String permission = permissions_[i];
-                        int grantResult = grantResults[i];
+            for (int i = 0; i < permissions_.length; ++i) {
+                String permission = permissions_[i];
+                int grantResult = grantResults[i];
 
-                        if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                            grantedPermissions.add(permission);
-                        } else {
-                            deniedPermissions.add(permission);
-                        }
-                    }
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    grantedPermissions.add(permission);
+                } else {
+                    deniedPermissions.add(permission);
+                }
+            }
 
-                    // Success means that all requested permissions were granted.
-                    for (String p : permissions) {
-                        if (!grantedPermissions.contains(p)) {
-                            // According to step 6 of the getUserMedia() algorithm
-                            // "if the result is denied, jump to the step Permission
-                            // Failure."
-                            errorCallback.invoke(deniedPermissions);
-                            return;
-                        }
-                    }
-                    successCallback.invoke(grantedPermissions);
-                };
+            // Success means that all requested permissions were granted.
+            for (String p : permissions) {
+                if (!grantedPermissions.contains(p)) {
+                    // According to step 6 of the getUserMedia() algorithm
+                    // "if the result is denied, jump to the step Permission
+                    // Failure."
+                    errorCallback.invoke(deniedPermissions);
+                    return;
+                }
+            }
+            successCallback.invoke(grantedPermissions);
+        };
 
         final Activity activity = _currentActivity;
         if (activity != null) {
