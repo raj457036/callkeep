@@ -315,13 +315,13 @@ public class CallKeepModule {
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final NotificationChannel channel = new NotificationChannel("incoming_calls", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
+                final NotificationChannel channel = new NotificationChannel("incoming_call", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(channel);
             }
 
             final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 2, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_call");
 
             customCallNotification.setOnClickPendingIntent(R.id.customCallBanner, pendingIntent);
 
@@ -336,8 +336,8 @@ public class CallKeepModule {
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
 
-//            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
-//            builder.setSound(ringtoneUri);
+            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
+            builder.setSound(ringtoneUri);
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             Log.d("N", "shown Notification");
