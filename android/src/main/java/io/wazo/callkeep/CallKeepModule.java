@@ -295,19 +295,17 @@ public class CallKeepModule {
 
 
 
-            final Intent answerIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
-            answerIntent.setClass(getAppContext(), LocalBroadcastManager.class);
+            final Intent answerIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_ANSWER_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
-            final Intent declineIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
-            declineIntent.setClass(getAppContext(), LocalBroadcastManager.class);
+            final Intent declineIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_END_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getActivity(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getActivity(getAppContext(), 1, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 1, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
