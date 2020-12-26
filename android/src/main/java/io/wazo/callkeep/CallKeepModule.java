@@ -299,7 +299,7 @@ public class CallKeepModule {
             answerIntent.setAction(ACTION_ANSWER_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
-            final Intent declineIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
+            final Intent declineIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
             answerIntent.setAction(ACTION_END_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
@@ -321,8 +321,6 @@ public class CallKeepModule {
             final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 2, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_call");
-
-            customCallNotification.setOnClickPendingIntent(R.id.customCallBanner, pendingIntent);
 
             builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
             builder.setFullScreenIntent(pendingIntent, true);
@@ -866,10 +864,12 @@ public class CallKeepModule {
 
             switch (intent.getAction()) {
                 case ACTION_END_CALL:
+                    Log.d(TAG, "Tapped on End Call");
                     args.putString("callUUID", attributeMap.get(EXTRA_CALL_UUID));
                     sendEventToFlutter("CallKeepPerformEndCallAction", args);
                     break;
                 case ACTION_ANSWER_CALL:
+                    Log.d(TAG, "Tapped on Answer");
                     args.putString("callUUID", attributeMap.get(EXTRA_CALL_UUID));
                     sendEventToFlutter("CallKeepPerformAnswerCallAction", args);
                     break;
