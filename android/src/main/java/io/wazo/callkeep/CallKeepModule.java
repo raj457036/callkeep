@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -278,7 +279,7 @@ public class CallKeepModule {
 
     public void displayIncomingCall(String uuid, String number, String callerName) {
         final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
+        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getAppContext());
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
 
             dismissCustomIncomingCall();
@@ -307,6 +308,9 @@ public class CallKeepModule {
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
+
+            final int[] ids = new int[]{R.id.btnAnswer, R.id.btnDecline};
+            appWidgetManager.updateAppWidget(ids , customCallNotification);
 
             Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
 
