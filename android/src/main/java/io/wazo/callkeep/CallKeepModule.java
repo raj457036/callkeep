@@ -312,6 +312,7 @@ public class CallKeepModule {
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
 
+            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -335,9 +336,9 @@ public class CallKeepModule {
             builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
-
-            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
+            builder.setColor(getAppContext().getResources().getColor(R.color.White));
             builder.setSound(ringtoneUri);
+
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             Log.d("N", "shown Notification");
