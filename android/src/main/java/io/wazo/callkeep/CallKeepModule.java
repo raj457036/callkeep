@@ -281,6 +281,8 @@ public class CallKeepModule {
 
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
 
+            dismissCustomIncomingCall();
+
             Log.d("N", "Showing Notification");
 
             RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
