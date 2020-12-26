@@ -311,6 +311,8 @@ public class CallKeepModule {
             builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
+
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
             return;
         }
 
