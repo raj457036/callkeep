@@ -41,7 +41,7 @@ import static io.wazo.callkeep.Constants.*;
 public class VoiceConnection extends Connection {
     private boolean isMuted = false;
     private HashMap<String, String> handle;
-    private Context context;
+    private final Context context;
     private static final String TAG = "RNCK:VoiceConnection";
 
     VoiceConnection(Context context, HashMap<String, String> handle) {
@@ -109,7 +109,7 @@ public class VoiceConnection extends Connection {
         sendCallRequestToActivity(ACTION_END_CALL, handle);
         Log.d(TAG, "onDisconnect executed");
         try {
-            ((VoiceConnectionService) context).deinitConnection(handle.get(EXTRA_CALL_UUID));
+            VoiceConnectionService.deinitConnection(handle.get(EXTRA_CALL_UUID));
         } catch(Throwable exception) {
             Log.e(TAG, "Handle map error", exception);
         }
@@ -138,7 +138,7 @@ public class VoiceConnection extends Connection {
             default:
                 break;
         }
-        ((VoiceConnectionService)context).deinitConnection(handle.get(EXTRA_CALL_UUID));
+        VoiceConnectionService.deinitConnection(handle.get(EXTRA_CALL_UUID));
         destroy();
     }
 
@@ -149,7 +149,7 @@ public class VoiceConnection extends Connection {
         sendCallRequestToActivity(ACTION_END_CALL, handle);
         Log.d(TAG, "onAbort executed");
         try {
-            ((VoiceConnectionService) context).deinitConnection(handle.get(EXTRA_CALL_UUID));
+            VoiceConnectionService.deinitConnection(handle.get(EXTRA_CALL_UUID));
         } catch(Throwable exception) {
             Log.e(TAG, "Handle map error", exception);
         }
@@ -177,7 +177,7 @@ public class VoiceConnection extends Connection {
         sendCallRequestToActivity(ACTION_END_CALL, handle);
         Log.d(TAG, "onReject executed");
         try {
-            ((VoiceConnectionService) context).deinitConnection(handle.get(EXTRA_CALL_UUID));
+            VoiceConnectionService.deinitConnection(handle.get(EXTRA_CALL_UUID));
         } catch(Throwable exception) {
             Log.e(TAG, "Handle map error", exception);
         }

@@ -43,7 +43,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RemoteViews;
-import android.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,6 +68,7 @@ import io.wazo.callkeep.utils.ConstraintsArray;
 import io.wazo.callkeep.utils.PermissionUtils;
 
 import static io.wazo.callkeep.Constants.*;
+import io.wazo.callkeep.R;
 
 
 // @see https://github.com/kbagchiGWC/voice-quickstart-android/blob/9a2aff7fbe0d0a5ae9457b48e9ad408740dfb968/exampleConnectionService/src/main/java/com/twilio/voice/examples/connectionservice/VoiceConnectionServiceActivity.java
@@ -85,7 +85,7 @@ public class CallKeepModule {
     private static TelecomManager telecomManager;
     private static TelephonyManager telephonyManager;
     private static MethodChannel.Result hasPhoneAccountPromise;
-    private Context _context;
+    private final Context _context;
     public static PhoneAccountHandle handle;
     private boolean isReceiverRegistered = false;
     private VoiceBroadcastReceiver voiceBroadcastReceiver;
@@ -114,27 +114,27 @@ public class CallKeepModule {
     public boolean HandleMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "setup": {
-                setup(new ConstraintsMap((Map<String, Object>) call.argument("options")));
+                setup(new ConstraintsMap(call.argument("options")));
                 result.success(null);
             }
             break;
             case "displayIncomingCall": {
-                displayIncomingCall((String) call.argument("uuid"), (String) call.argument("handle"), (String) call.argument("localizedCallerName"));
+                displayIncomingCall(call.argument("uuid"), call.argument("handle"), call.argument("localizedCallerName"));
                 result.success(null);
             }
             break;
             case "answerIncomingCall": {
-                answerIncomingCall((String) call.argument("uuid"));
+                answerIncomingCall(call.argument("uuid"));
                 result.success(null);
             }
             break;
             case "startCall": {
-                startCall((String) call.argument("uuid"), (String) call.argument("number"), (String) call.argument("callerName"));
+                startCall(call.argument("uuid"), call.argument("number"), call.argument("callerName"));
                 result.success(null);
             }
             break;
             case "endCall": {
-                endCall((String) call.argument("uuid"));
+                endCall(call.argument("uuid"));
                 result.success(null);
             }
             break;
@@ -144,7 +144,7 @@ public class CallKeepModule {
             }
             break;
             case "checkPhoneAccountPermission": {
-                checkPhoneAccountPermission(new ConstraintsArray((ArrayList<Object>) call.argument("optionalPermissions")), result);
+                checkPhoneAccountPermission(new ConstraintsArray(call.argument("optionalPermissions")), result);
             }
             break;
             case "checkDefaultPhoneAccount": {
@@ -152,32 +152,32 @@ public class CallKeepModule {
             }
             break;
             case "setOnHold": {
-                setOnHold((String) call.argument("uuid"), (Boolean) call.argument("hold"));
+                setOnHold(call.argument("uuid"), call.argument("hold"));
                 result.success(null);
             }
             break;
             case "reportEndCallWithUUID": {
-                reportEndCallWithUUID((String) call.argument("uuid"), (int) call.argument("reason"));
+                reportEndCallWithUUID(call.argument("uuid"), call.argument("reason"));
                 result.success(null);
             }
             break;
             case "rejectCall": {
-                rejectCall((String) call.argument("uuid"));
+                rejectCall(call.argument("uuid"));
                 result.success(null);
             }
             break;
             case "setMutedCall": {
-                setMutedCall((String) call.argument("uuid"), (Boolean) call.argument("muted"));
+                setMutedCall(call.argument("uuid"), call.argument("muted"));
                 result.success(null);
             }
             break;
             case "sendDTMF": {
-                sendDTMF((String) call.argument("uuid"), (String) call.argument("key"));
+                sendDTMF(call.argument("uuid"), call.argument("key"));
                 result.success(null);
             }
             break;
             case "updateDisplay": {
-                updateDisplay((String) call.argument("uuid"), (String) call.argument("displayName"), (String) call.argument("handle"));
+                updateDisplay(call.argument("uuid"), call.argument("displayName"), call.argument("handle"));
                 result.success(null);
             }
             break;
@@ -194,7 +194,7 @@ public class CallKeepModule {
             }
             break;
             case "setAvailable": {
-                setAvailable((Boolean) call.argument("available"));
+                setAvailable(call.argument("available"));
                 result.success(null);
             }
             break;
@@ -204,7 +204,7 @@ public class CallKeepModule {
             }
             break;
             case "setCurrentCallActive": {
-                setCurrentCallActive((String) call.argument("uuid"));
+                setCurrentCallActive(call.argument("uuid"));
                 result.success(null);
             }
             break;
@@ -218,14 +218,14 @@ public class CallKeepModule {
             break;
             case "displayCustomIncomingCall": {
                 displayCustomIncomingCall(
-                        (String)call.argument("packageName"),
-                        (String)call.argument("className"),
-                        (String)call.argument("icon"),
-                        (HashMap<String, String>) call.argument("extra"),
-                        (String) call.argument("contentTitle"),
-                        (String)call.argument("answerText"),
-                        (String)call.argument("declineText"),
-                        (String)call.argument("ringtoneUri")
+                        call.argument("packageName"),
+                        call.argument("className"),
+                        call.argument("icon"),
+                        call.argument("extra"),
+                        call.argument("contentTitle"),
+                        call.argument("answerText"),
+                        call.argument("declineText"),
+                        call.argument("ringtoneUri")
                 );
                 result.success(null);
             }

@@ -57,7 +57,7 @@ public class VoiceConnectionService extends ConnectionService {
     private static String notReachableCallUuid;
     private static ConnectionRequest currentConnectionRequest;
     private static PhoneAccountHandle phoneAccountHandle = null;
-    private static String TAG = "RNCK:VoiceConnectionService";
+    private static final String TAG = "RNCK:VoiceConnectionService";
     public static Map<String, VoiceConnection> currentConnections = new HashMap<>();
     public static Boolean hasOutgoingCall = false;
     public static VoiceConnectionService currentConnectionService = null;
@@ -102,9 +102,7 @@ public class VoiceConnectionService extends ConnectionService {
         Log.d(TAG, "deinitConnection:" + connectionId);
         VoiceConnectionService.hasOutgoingCall = false;
 
-        if (currentConnections.containsKey(connectionId)) {
-            currentConnections.remove(connectionId);
-        }
+        currentConnections.remove(connectionId);
     }
 
     @Override
@@ -125,8 +123,8 @@ public class VoiceConnectionService extends ConnectionService {
         String uuid = UUID.randomUUID().toString();
 
         if (!isInitialized && !isReachable) {
-            this.notReachableCallUuid = uuid;
-            this.currentConnectionRequest = request;
+            notReachableCallUuid = uuid;
+            currentConnectionRequest = request;
             this.checkReachability();
         }
 
@@ -197,14 +195,14 @@ public class VoiceConnectionService extends ConnectionService {
     }
 
     private void wakeUpAfterReachabilityTimeout(ConnectionRequest request) {
-        if (this.currentConnectionRequest == null) {
+        if (currentConnectionRequest == null) {
             return;
         }
         Log.d(TAG, "checkReachability timeout, force wakeup");
         Bundle extras = request.getExtras();
         String number = request.getAddress().getSchemeSpecificPart();
         String displayName = extras.getString(EXTRA_CALLER_NAME);
-        wakeUpApplication(this.notReachableCallUuid, number, displayName);
+        wakeUpApplication(notReachableCallUuid, number, displayName);
 
         VoiceConnectionService.currentConnectionRequest = null;
     }
@@ -218,7 +216,7 @@ public class VoiceConnectionService extends ConnectionService {
         new android.os.Handler().postDelayed(
             new Runnable() {
                 public void run() {
-                    instance.wakeUpAfterReachabilityTimeout(instance.currentConnectionRequest);
+                    instance.wakeUpAfterReachabilityTimeout(currentConnectionRequest);
                 }
             }, 2000);
     }

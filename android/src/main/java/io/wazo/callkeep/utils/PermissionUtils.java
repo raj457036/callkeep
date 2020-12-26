@@ -157,7 +157,7 @@ public class PermissionUtils {
         // All permissions have already been granted or we cannot ask
         // the user about the denied ones.
         finish();
-        send((ResultReceiver) args.getParcelable(RESULT_RECEIVER), requestCode, permissions, grantResults);
+        send(args.getParcelable(RESULT_RECEIVER), requestCode, permissions, grantResults);
       } else {
         // Ask the user about the denied permissions.
         requestPermissions(
