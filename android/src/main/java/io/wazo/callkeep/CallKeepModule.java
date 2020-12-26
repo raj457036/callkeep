@@ -304,8 +304,8 @@ public class CallKeepModule {
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getActivity(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getActivity(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
@@ -334,12 +334,8 @@ public class CallKeepModule {
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
 
-            try {
-                Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
-                builder.setSound(ringtoneUri);
-            } catch (Exception e) {
-                Log.d(TAG, "Error playing ringtone: " + e.toString());
-            }
+            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
+            builder.setSound(ringtoneUri);
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             return;
