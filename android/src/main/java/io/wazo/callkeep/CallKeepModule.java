@@ -323,7 +323,7 @@ public class CallKeepModule {
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
 
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             Ringtone r = RingtoneManager.getRingtone(getAppContext(), notification);
             r.play();
 
