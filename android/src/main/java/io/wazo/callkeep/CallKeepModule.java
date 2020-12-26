@@ -295,17 +295,15 @@ public class CallKeepModule {
 
 
 
-            final Intent answerIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
-            answerIntent.setAction(ACTION_ANSWER_CALL);
+            final Intent answerIntent = new Intent(ACTION_ANSWER_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
-            final Intent declineIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
-            answerIntent.setAction(ACTION_END_CALL);
+            final Intent declineIntent = new Intent(ACTION_END_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 1, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, 0);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 1, declineIntent, 0);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
