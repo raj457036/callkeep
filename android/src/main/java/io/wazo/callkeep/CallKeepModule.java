@@ -336,12 +336,7 @@ public class CallKeepModule {
 
             try {
                 Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
-                Ringtone ringtone = RingtoneManager.getRingtone(getAppContext(), ringtoneUri);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ringtone.setLooping(true);
-                }
-                ringtone.play();
+                builder.setSound(ringtoneUri);
             } catch (Exception e) {
                 Log.d(TAG, "Error playing ringtone: " + e.toString());
             }
