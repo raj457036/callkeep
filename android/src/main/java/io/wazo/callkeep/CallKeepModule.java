@@ -297,11 +297,12 @@ public class CallKeepModule {
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
+
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -311,6 +312,8 @@ public class CallKeepModule {
 
             final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
+
+            customCallNotification.setOnClickPendingIntent(R.id.customCallBanner, pendingIntent);
 
             builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
             builder.setFullScreenIntent(pendingIntent, true);
