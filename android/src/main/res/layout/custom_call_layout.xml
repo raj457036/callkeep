@@ -60,20 +60,20 @@
         <Button
             android:id="@+id/btnDecline"
             android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="5dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="7dp"
             android:layout_weight="0.5"
-            android:backgroundTint="@color/Red"
+            android:background="@color/Red"
             android:text="Decline"
             android:gravity="center"
             android:textColor="@color/White"/>
         <Button
             android:id="@+id/btnAnswer"
             android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="5dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="7dp"
             android:layout_weight="0.5"
-            android:backgroundTint="@color/ForestGreen"
+            android:background="@color/ForestGreen"
             android:text="Answer"
             android:gravity="center"
             android:textColor="@color/White"/>
