@@ -295,17 +295,19 @@ public class CallKeepModule {
 
 
 
-            final Intent answerIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
+            final Intent answerIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
+            answerIntent.setClass(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_ANSWER_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
-            final Intent declineIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
+            final Intent declineIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
+            declineIntent.setClass(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_END_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getActivity(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getActivity(getAppContext(), 1, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
@@ -317,7 +319,7 @@ public class CallKeepModule {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 2, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
 
@@ -338,6 +340,7 @@ public class CallKeepModule {
             builder.setSound(ringtoneUri);
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
+            Log.d("N", "shown Notification");
             return;
         }
 
