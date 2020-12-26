@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="128dp"
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:background="@drawable/shape"
@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.85"
+            android:layout_weight="0.75"
             android:orientation="vertical"
             android:layout_gravity="center"
             >
@@ -40,12 +40,12 @@
                 android:textSize="12sp"
                 android:layout_marginTop="-10dp"
                 android:text="Incoming Call"
-                android:paddingBottom="8dp"/>
+                android:paddingBottom="4dp"/>
         </LinearLayout>
 
         <ImageView
-            android:layout_width="68dp"
-            android:layout_height="68dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:id="@+id/photo"
             android:src="@drawable/icon"/>
     </LinearLayout>
@@ -64,7 +64,8 @@
             android:layout_height="50dp"
             android:layout_marginEnd="7dp"
             android:layout_weight="0.5"
-            android:background="@color/Red"
+            android:background="@drawable/shape"
+            android:backgroundTint="@color/Red"
             android:text="Decline"
             android:gravity="center"
             android:textColor="@color/White"/>
@@ -74,7 +75,8 @@
             android:layout_height="50dp"
             android:layout_marginStart="7dp"
             android:layout_weight="0.5"
-            android:background="@color/ForestGreen"
+            android:background="@drawable/shape"
+            android:backgroundTint="@color/Green"
             android:text="Answer"
             android:gravity="center"
             android:textColor="@color/White"/>

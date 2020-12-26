@@ -283,16 +283,20 @@ public class CallKeepModule {
             Log.d("N", "Showing Notification");
 
             RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
+
+            customCallNotification.setString(R.id.name, "text", callerName);
+
             Context context = getAppContext();
             String packageName = context.getApplicationContext().getPackageName();
             final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
 
 
-            final Intent answerIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
+
+            final Intent answerIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_ANSWER_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
-            final Intent declineIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
+            final Intent declineIntent = new Intent(getAppContext(), LocalBroadcastManager.class);
             answerIntent.setAction(ACTION_END_CALL);
             answerIntent.putExtra("callUUID", uuid);
 
