@@ -287,7 +287,7 @@ public class CallKeepModule {
 
             RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
 
-            customCallNotification.setString(R.id.name, "text", callerName);
+//            customCallNotification.setString(R.id.name, "text", callerName);
 
             Context context = getAppContext();
             String packageName = context.getApplicationContext().getPackageName();
