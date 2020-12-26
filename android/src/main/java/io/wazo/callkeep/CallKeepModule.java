@@ -43,11 +43,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RemoteViews;
+import android.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -59,9 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.Result;
@@ -280,55 +278,6 @@ public class CallKeepModule {
 
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
 
-            RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
-            Context context = getAppContext();
-            String packageName = context.getApplicationContext().getPackageName();
-            final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
-
-//            final Intent answerIntent = new Intent();
-//            answerIntent.putExtra("io.wazo.callkeep.ACTION", "answer");
-//            answerIntent.setClassName(packageName, "$packageName.$className");
-//
-//            final Intent declineIntent = new Intent();
-//            declineIntent.putExtra("io.wazo.callkeep.ACTION", "decline");
-//            declineIntent.setClassName(packageName, );
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final NotificationChannel channel = new NotificationChannel("incoming_calls", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
-                notificationManager.createNotificationChannel(channel);
-            }
-
-            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_calls");
-
-            builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
-            builder.setFullScreenIntent(pendingIntent, true);
-            builder.setOngoing(true);
-            builder.setCategory(NotificationCompat.CATEGORY_CALL);
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-            builder.setPriority(NotificationCompat.PRIORITY_MAX);
-            builder.setAutoCancel(true);
-            return;
-        }
-
-        Log.d(TAG, "displayIncomingCall number: " + number + ", callerName: " + callerName);
-
-        Bundle extras = new Bundle();
-        Uri uri = Uri.fromParts(PhoneAccount.SCHEME_TEL, number, null);
-
-        extras.putParcelable(TelecomManager.EXTRA_INCOMING_CALL_ADDRESS, uri);
-        extras.putString(EXTRA_CALLER_NAME, callerName);
-        extras.putString(EXTRA_CALL_UUID, uuid);
-
-        telecomManager.addNewIncomingCall(handle, extras);
-    }
-
-
-    public void answerIncomingCall(String uuid) {
-        final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
-
             Log.d("N", "Showing Notification");
 
             RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
@@ -362,6 +311,24 @@ public class CallKeepModule {
             builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
+            return;
+        }
+
+        Log.d(TAG, "displayIncomingCall number: " + number + ", callerName: " + callerName);
+
+        Bundle extras = new Bundle();
+        Uri uri = Uri.fromParts(PhoneAccount.SCHEME_TEL, number, null);
+
+        extras.putParcelable(TelecomManager.EXTRA_INCOMING_CALL_ADDRESS, uri);
+        extras.putString(EXTRA_CALLER_NAME, callerName);
+        extras.putString(EXTRA_CALL_UUID, uuid);
+
+        telecomManager.addNewIncomingCall(handle, extras);
+    }
+
+
+    public void answerIncomingCall(String uuid) {
+        if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
             return;
         }
 
