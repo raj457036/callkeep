@@ -31,6 +31,8 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -285,13 +287,22 @@ public class CallKeepModule {
             String packageName = context.getApplicationContext().getPackageName();
             final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
 
-//            final Intent answerIntent = new Intent();
-//            answerIntent.putExtra("io.wazo.callkeep.ACTION", "answer");
-//            answerIntent.setClassName(packageName, "$packageName.$className");
-//
-//            final Intent declineIntent = new Intent();
-//            declineIntent.putExtra("io.wazo.callkeep.ACTION", "decline");
-//            declineIntent.setClassName(packageName, );
+
+            final Intent answerIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
+            answerIntent.setAction(ACTION_ANSWER_CALL);
+            answerIntent.putExtra("callUUID", uuid);
+
+            final Intent declineIntent = new Intent(getAppContext(), VoiceBroadcastReceiver.class);
+            answerIntent.setAction(ACTION_END_CALL);
+            answerIntent.putExtra("callUUID", uuid);
+
+
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
+            customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 final NotificationChannel channel = new NotificationChannel("incoming_calls", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
@@ -311,6 +322,10 @@ public class CallKeepModule {
             builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
             builder.setCustomContentView(customCallNotification);
             builder.setCustomBigContentView(customCallNotification);
+
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getAppContext(), notification);
+            r.play();
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             return;
@@ -359,6 +374,7 @@ public class CallKeepModule {
 
 
         final Intent answerIntent = new Intent();
+
         answerIntent.putExtra("io.wazo.callkeep.ACTION", "answer");
         answerIntent.setClassName(packageName, "$packageName.$className");
 
