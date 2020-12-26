@@ -301,8 +301,8 @@ public class CallKeepModule {
             answerIntent.putExtra("callUUID", uuid);
 
 
-            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
             customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
