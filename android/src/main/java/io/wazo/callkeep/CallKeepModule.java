@@ -275,6 +275,7 @@ public class CallKeepModule {
     }
 
 
+
     public void displayIncomingCall(String uuid, String number, String callerName) {
         final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -332,10 +333,16 @@ public class CallKeepModule {
             builder.setCustomBigContentView(customCallNotification);
 
             try {
-                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                Ringtone r = RingtoneManager.getRingtone(getAppContext(), notification);
-                r.play();
-            } catch (Exception e) {}
+                Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
+                Ringtone ringtone = RingtoneManager.getRingtone(getAppContext(), ringtoneUri);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ringtone.setLooping(true);
+                }
+                ringtone.play();
+            } catch (Exception e) {
+                Log.d(TAG, "Error playing ringtone: " + e.toString());
+            }
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             return;
