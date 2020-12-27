@@ -98,6 +98,8 @@ public class CallKeepModule {
 
     // v2
     private static final int NOTIFICATION_ID = 38496;
+    private static final String NOTIFICATION_CHANNEL_ID = "call_notification_id";
+
     // v2
 
     public CallKeepModule(Context context, BinaryMessenger messenger) {
@@ -276,6 +278,60 @@ public class CallKeepModule {
     }
 
 
+    private void showCustomNotification(final String uuid, final String number, final String callerName) {
+        final NotificationManager manager = (NotificationManager) getAppContext().getSystemService(NotificationManager.class);
+        final String packageName = getAppContext().getPackageName();
+        final RemoteViews notificationView = new RemoteViews(packageName, R.layout.call_notification_layout);
+
+        final Intent intent = getAppContext().getPackageManager().getLaunchIntentForPackage(packageName);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, intent, 0);
+
+        notificationView.setTextViewText(R.id.callerName, callerName);
+
+        final HashMap<String, String> _attributeMap = new HashMap<String, String>();
+        _attributeMap.put("'callUUID'", uuid);
+        _attributeMap.put("'number'", number);
+        _attributeMap.put("'callerName'", callerName);
+
+
+        // accept call intent
+        final Intent acceptCallIntent = new Intent(getAppContext(), CallNotificationReceiver.class);
+        acceptCallIntent.setAction(ACTION_ANSWER_CALL);
+        acceptCallIntent.putExtra("attributeMap", _attributeMap);
+        final PendingIntent acceptCallPendingIntent = PendingIntent.getBroadcast(getAppContext(), 0, acceptCallIntent, 0);
+        notificationView.setOnClickPendingIntent(R.id.acceptBtn, acceptCallPendingIntent);
+
+        // decline call intent
+        final Intent declineCallIntent = new Intent(getAppContext(), CallNotificationReceiver.class);
+        declineCallIntent.setAction(ACTION_END_CALL);
+        declineCallIntent.putExtra("attributeMap", _attributeMap);
+        final PendingIntent declineCallPendingIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineCallIntent, 0);
+        notificationView.setOnClickPendingIntent(R.id.acceptBtn, declineCallPendingIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    "Call Notification Channel",
+                    NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+        }
+
+        final Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), NOTIFICATION_CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.icon)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setCustomContentView(notificationView)
+                .setCustomBigContentView(notificationView)
+                .setCustomHeadsUpContentView(notificationView)
+                .setTimeoutAfter(60000)
+                .setFullScreenIntent(pendingIntent, true)
+                .setAutoCancel(true);
+
+        manager.notify(1001, builder.build());
+    }
+
 
     public void displayIncomingCall(String uuid, String number, String callerName) {
         final NotificationManager notificationManager = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -284,62 +340,7 @@ public class CallKeepModule {
 
             dismissCustomIncomingCall();
 
-            Log.d("N", "Showing Notification");
-
-            RemoteViews customCallNotification = new RemoteViews(getAppContext().getPackageName(), R.layout.custom_call_layout);
-
-//            customCallNotification.setString(R.id.name, "text", callerName);
-
-            Context context = getAppContext();
-            String packageName = context.getApplicationContext().getPackageName();
-            final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName).cloneFilter();
-
-
-
-            final Intent answerIntent = new Intent(ACTION_ANSWER_CALL);
-            answerIntent.putExtra("callUUID", uuid);
-
-            final Intent declineIntent = new Intent(ACTION_END_CALL);
-            answerIntent.putExtra("callUUID", uuid);
-
-
-            PendingIntent pendingAnswerIntent = PendingIntent.getBroadcast(getAppContext(), 0, answerIntent, 0);
-            PendingIntent pendingDeclineIntent = PendingIntent.getBroadcast(getAppContext(), 1, declineIntent, 0);
-
-            customCallNotification.setOnClickPendingIntent(R.id.btnAnswer, pendingAnswerIntent);
-            customCallNotification.setOnClickPendingIntent(R.id.btnDecline, pendingDeclineIntent);
-
-            final int[] ids = new int[]{R.id.btnAnswer, R.id.btnDecline};
-            appWidgetManager.updateAppWidget(ids , customCallNotification);
-
-            Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final NotificationChannel channel = new NotificationChannel("incoming_call", "Incoming Calls", NotificationManager.IMPORTANCE_HIGH);
-                notificationManager.createNotificationChannel(channel);
-            }
-
-            final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 2, launchIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), "incoming_call");
-
-            builder.setSmallIcon(getAppContext().getResources().getIdentifier("ic_launcher", "drawable", getAppContext().getPackageName()));
-            builder.setFullScreenIntent(pendingIntent, true);
-            builder.setOngoing(true);
-            builder.setCategory(NotificationCompat.CATEGORY_CALL);
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-            builder.setPriority(NotificationCompat.PRIORITY_MAX);
-            builder.setAutoCancel(true);
-            builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
-            builder.setCustomContentView(customCallNotification);
-            builder.setCustomBigContentView(customCallNotification);
-            builder.setColor(getAppContext().getResources().getColor(R.color.White));
-            builder.setSound(ringtoneUri);
-
-
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
-            Log.d("N", "shown Notification");
+            showCustomNotification(uuid, number, callerName);
             return;
         }
 

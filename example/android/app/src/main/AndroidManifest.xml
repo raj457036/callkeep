@@ -71,5 +71,7 @@
               <action android:name="android.telecom.ConnectionService" />
           </intent-filter>
         </service>
+
+        <receiver android:name="io.wazo.callkeep.CallNotificationReceiver"/>
     </application>
 </manifest>
