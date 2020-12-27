@@ -53,7 +53,6 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.media2.player.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -323,7 +322,6 @@ public class CallKeepModule {
         }
 
         final Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
-        
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), NOTIFICATION_CHANNEL_ID);
         builder.setSmallIcon(icon)
