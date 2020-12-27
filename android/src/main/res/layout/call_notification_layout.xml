@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="144dp"
     android:background="@drawable/shape"
+    android:backgroundTint="@color/White"
     >
 
     <LinearLayout
@@ -71,6 +72,7 @@
                 android:backgroundTint="@color/Green"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/shape"
+                android:textColor="@color/White"
                 android:text="Answer" />
 
             <Button
@@ -81,6 +83,7 @@
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="@color/Red"
                 android:background="@drawable/shape"
+                android:textColor="@color/White"
                 android:text="Decline"
                 />
         </LinearLayout>

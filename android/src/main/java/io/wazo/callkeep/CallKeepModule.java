@@ -309,7 +309,7 @@ public class CallKeepModule {
         declineCallIntent.setAction(ACTION_END_CALL);
         declineCallIntent.putExtra("attributeMap", _attributeMap);
         final PendingIntent declineCallPendingIntent = PendingIntent.getBroadcast(getAppContext(), 0, declineCallIntent, 0);
-        notificationView.setOnClickPendingIntent(R.id.acceptBtn, declineCallPendingIntent);
+        notificationView.setOnClickPendingIntent(R.id.declineBtn, declineCallPendingIntent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
