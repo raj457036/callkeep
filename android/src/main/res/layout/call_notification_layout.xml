@@ -64,7 +64,7 @@
             android:gravity="end">
 
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/acceptBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -73,9 +73,11 @@
                 android:layout_marginRight="5dp"
                 android:background="@drawable/shape"
                 android:textColor="@color/White"
+                android:textFontWeight="500"
+                android:textSize="16sp"
                 android:text="Answer" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/declineBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -84,6 +86,8 @@
                 android:backgroundTint="@color/Red"
                 android:background="@drawable/shape"
                 android:textColor="@color/White"
+                android:textFontWeight="500"
+                android:textSize="16sp"
                 android:text="Decline"
                 />
         </LinearLayout>
