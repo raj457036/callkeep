@@ -40,10 +40,12 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/logo"
             android:paddingHorizontal="8dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/icon"
+            android:background="@drawable/shape"
+
             />
     </LinearLayout>
 

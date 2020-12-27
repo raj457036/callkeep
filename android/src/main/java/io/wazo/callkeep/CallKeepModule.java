@@ -283,10 +283,13 @@ public class CallKeepModule {
         final String packageName = getAppContext().getPackageName();
         final RemoteViews notificationView = new RemoteViews(packageName, R.layout.call_notification_layout);
 
+        final int icon = getAppContext().getResources().getIdentifier("icon", "drawable", packageName);
+
         final Intent intent = getAppContext().getPackageManager().getLaunchIntentForPackage(packageName);
         final PendingIntent pendingIntent = PendingIntent.getActivity(getAppContext(), 0, intent, 0);
 
         notificationView.setTextViewText(R.id.callerName, callerName);
+        notificationView.setImageViewResource(R.id.logo, icon);
 
         final HashMap<String, String> _attributeMap = new HashMap<String, String>();
         _attributeMap.put("'callUUID'", uuid);
@@ -319,13 +322,18 @@ public class CallKeepModule {
         final Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getAppContext(), RingtoneManager.TYPE_RINGTONE);
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext(), NOTIFICATION_CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.icon)
+        builder.setSmallIcon(icon)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_CALL)
                 .setCustomContentView(notificationView)
                 .setCustomBigContentView(notificationView)
                 .setCustomHeadsUpContentView(notificationView)
                 .setTimeoutAfter(60000)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setOngoing(true)
+                .setTicker("Incoming Call")
+                .setSound(ringtoneUri)
+                .setVibrate(new long[] { 100, 30, 100, 30, 100, 200, 200, 30, 200, 30, 200, 200, 100, 30, 100, 30, 100, 100, 30, 100, 30, 100, 200, 200, 30, 200, 30, 200, 200, 100, 30, 100, 30, 100 })
                 .setFullScreenIntent(pendingIntent, true)
                 .setAutoCancel(true);
 
