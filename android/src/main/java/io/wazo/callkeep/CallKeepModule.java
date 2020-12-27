@@ -297,6 +297,8 @@ public class CallKeepModule {
         _attributeMap.put("'callerName'", callerName);
 
 
+
+
         // accept call intent
         final Intent acceptCallIntent = new Intent(getAppContext(), CallNotificationReceiver.class);
         acceptCallIntent.setAction(ACTION_ANSWER_CALL);
@@ -337,7 +339,7 @@ public class CallKeepModule {
                 .setFullScreenIntent(pendingIntent, true)
                 .setAutoCancel(true);
 
-        manager.notify(1001, builder.build());
+        manager.notify(NOTIFICATION_ID, builder.build());
     }
 
 
