@@ -64,7 +64,7 @@
             android:gravity="end">
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/acceptBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -75,7 +75,7 @@
                 android:textColor="@color/White"
                 android:text="Answer" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/declineBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
